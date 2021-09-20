@@ -8,7 +8,7 @@
 #Import required library
 #library(caret)
 
-data <- read.csv("C:/Users/DSITD-Wadudi/Documents/data dudi/dokumen/S2 ILKOM/Semester 1/Kecerdasan Komputasional/Kuliah/fonts.csv", header = T)
+data = read.csv("fonts.csv", header = T)
 
 datalatih <- data[1:14,1:63]
 datauji <- data[15:21,1:63]

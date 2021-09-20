@@ -1,6 +1,6 @@
 #LVQ
 
-data <- read.csv("C:/Users/DSITD-Wadudi/Documents/data dudi/dokumen/S2 ILKOM/Semester 1/Kecerdasan Komputasional/Kuliah/fonts.csv", header = T)
+data = read.csv("fonts.csv", header = T)
 
 datalatih_lvq <- data[1:14,1:63]
 

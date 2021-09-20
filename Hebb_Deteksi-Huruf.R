@@ -1,6 +1,6 @@
 
 
-data = read.csv("fonts.csv", header = T)
+data_heb <- read.csv("fonts-heb.csv", header = T)
 #View(data_heb)
 datalatih_heb <- data_heb[1:14,1:63]
 #View(datalatih_heb)
@@ -8,19 +8,17 @@ datalatih_heb <- data_heb[1:14,1:63]
 datauji_heb <- data_heb[15:21,1:63]
 
 #buat target 
-target_heb_datalatih <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1)
+target_heb_datalatih <- c(-1,1,-1,1,1,-1,1,-1,1,-1,1,1,-1,-1)
+
+#buat target uji
+target_heb_datauji <- c(-1,1,-1,1,1,-1,1)
 
 #awal
 bobot_heb <- as.vector(rep(0, 63))
 bias_heb <- c(1,1,1,1,1,1,1,1,1,1,1,1,1,1)
 
 fungsi_aktivasi <- as.vector(rep(0, 14))
-
-# update bobot baru
-# w1 = w1old + (x1* t)
-
-# update bias baru
-# b1 = blama + t
+fungsi_aktivasiuji <- as.vector(rep(0, 7))
 
 
 n <- nrow(datalatih_heb)
@@ -37,32 +35,57 @@ for(obyek in 1:n){
    
 }
 
-Y_hat <- c()
-for (letter in 1:7) { # untuk setiap huruf A, B, C, D, E, J, K
-  temp <- c()
-  for (i in 1:7) { # untuk setiap output Y[1] sampai Y[7]
-    temp <- append(temp, sum(X[letter,] * my_hebb$weights[i,]))
-  }
-  # print(temp)
-  Y_hat <- append(Y_hat, temp)
-}
-
-# testing data uji menggunakan bobot yg sudah diupdate
+#dapatkan fungsi aktivasi datalatih.
 for(obyek in 1:n){
   for(w in 1:63){
-    bobot_heb[w] <- bobot_heb[w] + (datauji_heb[obyek,w] * target_heb_datalatih[obyek])
+    fungsi_aktivasi[obyek] <- fungsi_aktivasi[obyek] + (datalatih_heb[obyek,w] * bobot_heb[w])
   }
-  
+  fungsi_aktivasi[obyek] <- fungsi_aktivasi[obyek] + bias_heb[14]
+}
+print(fungsi_aktivasi)
+
+
+# testing data uji
+
+for(obyek in 1:7){
+  for(w in 1:63){
+    fungsi_aktivasiuji[obyek] <- fungsi_aktivasiuji[obyek] + (datauji_heb[obyek,w] * bobot_heb[w])
+  }
+  fungsi_aktivasiuji[obyek] <- fungsi_aktivasiuji[obyek] + bias_heb[14]
+}
+print(fungsi_aktivasiuji)
+
+#karna pakai bipolar, maka jika hasil > 0 = 1, jika hasil < 0 = 1.
+for(obyek in 1:7){
+  if(fungsi_aktivasiuji[obyek] > 0){
+    fungsi_aktivasiuji[obyek]=1 
+  }else{
+    fungsi_aktivasiuji[obyek]=-1 
+  }
 }
 
 
+#Result
+#> print(fungsi_aktivasiuji)
+#[1]  -30  126  -22  122  102 -142   78
 
-#for(obyek in 1:n){
-#  for(w in 1:63){
-#    fungsi_aktivasi[obyek] <- fungsi_aktivasi[obyek] + (datalatih_heb[obyek,w] * bobot_heb[w])
-#  }
-#  fungsi_aktivasi[obyek] + fungsi_aktivasi[obyek] + bias_heb[14]
-#}
+#Target data uji
+#target_heb_datauji <- c(-1,1,-1,1,1,-1,1)
 
-#print(fungsi_aktivasi)
+# lihat hasil prediksi
+data.frame(
+  "Predicted" = round(fungsi_aktivasiuji, 3), 
+  "Actual" = target_heb_datauji
+)
+
+#Predicted Actual
+#1        -1     -1
+#2         1      1
+#3        -1     -1
+#4         1      1
+#5         1      1
+#6        -1     -1
+#7         1      1
+
+#Akurasi 100%
 

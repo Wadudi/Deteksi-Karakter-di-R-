@@ -55,7 +55,7 @@ for(obyek in 1:7){
 }
 print(fungsi_aktivasiuji)
 
-#karna pakai bipolar, maka jika hasil > 0 = 1, jika hasil < 0 = 1.
+#karna pakai bipolar, maka jika hasil > 0 = 1, jika hasil < 0 = -1.
 for(obyek in 1:7){
   if(fungsi_aktivasiuji[obyek] > 0){
     fungsi_aktivasiuji[obyek]=1 

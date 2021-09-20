@@ -6,7 +6,6 @@ uniqlabel = unique(data$label)
 head(data)
 x = as.matrix( subset(data, select=x1:x63) )
 x = x[1:14,]
-# printx(x)
 glabel = c(
   "A", "B", "C", "D", "E", "J", "K"
 )
@@ -114,7 +113,7 @@ sigmoid = function(x){
   1.0 / (1.0 + exp(-x))
 }
 
-# Derivasi fungsi aktifasi sigmoid (derivative of sigmoid)
+
 sigmoid_derivative <- function(x) {
   sigmoid(x) * (1.0 - sigmoid(x))
 }
@@ -148,14 +147,9 @@ softmax = function(x){
 
 
 feedforward = function(nn){
-  # logs("input", T)
-  # logs(nn$input, T)
-  # logs(nn$weights1, T)
   zin = (nn$input %*% t(nn$weights1))
   nn$layer1 = sigmoid(zin+nn$bias1)
   yin = (nn$layer1 %*% nn$weights2)
-  # nn$output = softmax(yin+nn$bias2)
-  # nn$output = sigmoid(yin+nn$bias2)
   nn$output = act1(yin+nn$bias2)
   if(nn$test){
     hr("nn$output")
@@ -165,19 +159,15 @@ feedforward = function(nn){
   nn
 }
 
-### Backpropagasi Balik berdasarkan aturan rantai (derivasi)
 backprop <- function(nn) {
-  # d_weights2 adalah aturan rantai (derivasi) bobot 2
   alpha = nn$alpha
   cost = nn$oh - nn$output
-  # cost = nn$output - nn$oh
   doy = ((cost) * sigmoid_derivative(nn$output))
   d_weights2 <- (
     t(nn$layer1)
     %*%
       doy
   )
-  # d_weights1 adalah aturan rantai (derivasi) bobot 1 dan bobot 2
   d_weights1 <- (
     t(nn$input) %*% (
       ((cost) * sigmoid_derivative(nn$output))
@@ -186,7 +176,6 @@ backprop <- function(nn) {
     )
   )
   
-  # update bobot menggunakan derivatif(slope) loss function
   nn$weights1 <- nn$weights1 + alpha*t(d_weights1)
   nn$weights2 <- nn$weights2 + alpha*d_weights2
   
@@ -205,12 +194,9 @@ train = function(nn, n=1500, learnType="fb", backprop=T){
     iteration = 1:n,
     loss = vector("numeric", length = n)
   )
-  # Lakukan pelatihan sebanya n iterasi kemudian simpan nilai loss
   for (i in 1:n) {
     progress("e", i, n/10)
     if(learnType=="fb"){
-      # print("nn$weights1")
-      # quit()
       
       nn <- feedforward(nn)
       if(nn$test){
@@ -218,14 +204,9 @@ train = function(nn, n=1500, learnType="fb", backprop=T){
       }
       if(backprop){
         nn <- backprop(nn)
-        # print(nn)
-        # quit()
-        # Simpan hasil loss function, untuk lihat plot perubahan erorr
+        
       }
       
-      # if(nn$epoch == 10){
-      #     break
-      # }
     }
     
     tryCatch({
@@ -235,21 +216,8 @@ train = function(nn, n=1500, learnType="fb", backprop=T){
     }, error = function(error_condition) {
       # print("e")
     }, finally={
-      # print("loss fn err")
     })
     nn$epoch = i
-  }
-  if(learnType!="som" && learnType!="lvq"){
-    print("predict")
-    print(nn$output)
-    if(nn$isOh){
-      print("actual")
-      print(nn$oh)
-    }else{
-      print("actual")
-      print(nn$y)
-    }
-   
   }
   
   nn

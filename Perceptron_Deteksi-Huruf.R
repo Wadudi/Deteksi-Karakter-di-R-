@@ -6,16 +6,16 @@ uniqlabel = unique(data$label)
 head(data)
 x = as.matrix( subset(data, select=x1:x63) )
 x = x[1:14,]
-ylabel = c("a", "b", "c", "d","e", "j", "k")
+ylabel = c("A", "B", "C", "D","E", "J", "K")
 
 gl = data$label
-data[data == "a"] = 1
-data[data == "b"] = 2
-data[data == "c"] = 3
-data[data == "d"] = 4
-data[data == "e"] = 5
-data[data == "j"] = 6
-data[data == "k"] = 7
+data[data == "A"] = 1
+data[data == "B"] = 2
+data[data == "C"] = 3
+data[data == "D"] = 4
+data[data == "E"] = 5
+data[data == "J"] = 6
+data[data == "K"] = 7
 data$label = as.numeric(data$label)
 data$labelreal = gl
 y = as.matrix( subset(data, select=label) )
